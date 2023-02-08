@@ -60,8 +60,10 @@ class JobApplicationTest {
     @Test
     public void testEquals() {
         JobApplication j2 = new JobApplication("2023-02-07", "Microsoft", "Software Engineer Intern");
-        assertFalse(j1.equals(j2));
+        assertFalse(j2.equals(j1));
         assertFalse(j2.equals("2023-02-07"));
-        assertTrue(j1.equals(j1));
+        assertTrue(j2.equals(j2));
+        assertTrue(j2.equals(new JobApplication("2023-02-07", "Microsoft",
+                        "Software Engineer Intern")));
     }
 }
