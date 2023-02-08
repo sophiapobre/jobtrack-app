@@ -60,10 +60,59 @@ class JobApplicationTest {
     @Test
     public void testEquals() {
         JobApplication j2 = new JobApplication("2023-02-07", "Microsoft", "Software Engineer Intern");
-        assertFalse(j2.equals(j1));
-        assertFalse(j2.equals("2023-02-07"));
+        // Comparing objects of the same class and with the same fields
         assertTrue(j2.equals(j2));
-        assertTrue(j2.equals(new JobApplication("2023-02-07", "Microsoft",
-                        "Software Engineer Intern")));
+
+        // Comparing objects of different classes
+        assertFalse(j2.equals("2023-02-07"));
+
+        // Comparing objects of the same class, with all possible combinations of equal and not equal fields that
+        // result in a false return statement
+        assertFalse(j2.equals(j1));
+
+        j2.setStatus(ACCEPTED);
+        assertFalse(j2.equals(j1));
+
+        j2.setRoleName("Software Developer Co-op");
+        assertFalse(j2.equals(j1));
+
+        j2.setCompanyName("Workday");
+        assertFalse(j2.equals(j1));
+
+        j2.setSubmissionDate("2023-02-01");
+        assertFalse(j2.equals(j1));
+
+        j2.setRoleName("Software Engineer Intern");
+        assertFalse(j2.equals(j1));
+
+        j2.setStatus(SUBMITTED);
+        assertFalse(j2.equals(j1));
+
+        j2.setCompanyName("Microsoft");
+        assertFalse(j2.equals(j1));
+
+        j2.setStatus(SUBMITTED);
+        assertFalse(j2.equals(j1));
+
+        j2.setRoleName("Software Developer Co-op");
+        assertFalse(j2.equals(j1));
+
+        j2.setStatus(INTERVIEWED);
+        assertFalse(j2.equals(j1));
+
+        j2.setSubmissionDate("2023-02-07");
+        j2.setStatus(SUBMITTED);
+        assertFalse(j2.equals(j1));
+
+        j2.setCompanyName("Workday");
+        j2.setRoleName("Software Engineer Intern");
+        assertFalse(j2.equals(j1));
+
+        j2.setRoleName("Software Developer Co-op");
+        assertFalse(j2.equals(j1));
+
+        j2.setRoleName("Software Engineer Intern");
+        j2.setStatus(INTERVIEWED);
+        assertFalse(j2.equals(j1));
     }
 }
