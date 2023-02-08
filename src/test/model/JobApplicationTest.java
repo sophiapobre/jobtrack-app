@@ -10,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JobApplicationTest {
     private JobApplication j1;
+    private JobApplication j2;
 
     @BeforeEach
     public void setUp() {
         j1 = new JobApplication("2023-02-01", "Workday", "Software Developer Co-op");
+        j2 = new JobApplication("2023-02-07", "Microsoft", "Software Engineer Intern");
     }
 
     @Test
@@ -58,16 +60,17 @@ class JobApplicationTest {
     }
 
     @Test
-    public void testEquals() {
-        JobApplication j2 = new JobApplication("2023-02-07", "Microsoft", "Software Engineer Intern");
-        // Comparing objects of the same class and with the same fields
-        assertTrue(j2.equals(j2));
-
-        // Comparing objects of different classes
+    public void testEqualsDifferentClasses() {
         assertFalse(j2.equals("2023-02-07"));
+    }
 
-        // Comparing objects of the same class, with all possible combinations of equal and not equal fields that
-        // result in a false return statement
+    @Test
+    public void testEqualsSameClassSameFields() {
+        assertTrue(j2.equals(j2));
+    }
+
+    @Test
+    public void testEqualsSameClassDifferentFields() {
         assertFalse(j2.equals(j1));
 
         j2.setStatus(ACCEPTED);
