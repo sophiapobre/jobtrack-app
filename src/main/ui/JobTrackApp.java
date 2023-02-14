@@ -6,7 +6,7 @@ import model.JobApplicationStatus;
 
 import java.util.Scanner;
 
-// Job application tracker application
+// Represents the job application tracker application
 public class JobTrackApp {
     private static final String ADD_COMMAND = "add";
     private static final String DELETE_COMMAND = "delete";
@@ -18,18 +18,23 @@ public class JobTrackApp {
     private Scanner input; // the scanner for user input
     private JobApplicationList jobApplicationList; // the list of job applications in the tracker
 
+    /*
+     * MODIFIES: this
+     * EFFECTS: runs the JobTrack application
+     */
     public JobTrackApp() {
         runJobTrackApp();
     }
 
     /*
-     * EFFECTS: runs the JobTrack application
+     * MODIFIES: this
+     * EFFECTS: initializes the JobTrack application, displays the main menu, and responds to given user command
      */
     public void runJobTrackApp() {
         boolean continueRunning = true;
         String command = null;
 
-        init();
+        initialize();
 
         while (continueRunning) {
             showMainMenu();
@@ -50,7 +55,7 @@ public class JobTrackApp {
      * MODIFIES: this
      * EFFECTS: initializes the job application list and scanner
      */
-    private void init() {
+    private void initialize() {
         jobApplicationList = new JobApplicationList();
         input = new Scanner(System.in);
     }
