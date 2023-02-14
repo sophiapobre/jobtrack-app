@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static model.JobApplicationStatus.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Represents the tests for the JobApplicationList class
 public class JobApplicationListTest {
     private JobApplicationList list;
     private JobApplication j1;
@@ -56,12 +57,10 @@ public class JobApplicationListTest {
 
     @Test
     public void testRemoveJobApplicationInList() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
+        addAllJobApplicationsToList();
         assertTrue(list.remove(j2));
         assertFalse(list.getJobApplications().contains(j2));
-        assertEquals(2, list.getJobApplications().size());
+        assertEquals(3, list.getJobApplications().size());
     }
 
     @Test
@@ -75,15 +74,15 @@ public class JobApplicationListTest {
 
     @Test
     public void testRemoveJobApplicationsUntilEmpty() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
+        addAllJobApplicationsToList();
         assertTrue(list.remove(j2));
         assertTrue(list.remove(j1));
+        assertTrue(list.remove(j4));
         assertTrue(list.remove(j3));
         assertFalse(list.getJobApplications().contains(j1));
         assertFalse(list.getJobApplications().contains(j2));
         assertFalse(list.getJobApplications().contains(j3));
+        assertFalse(list.getJobApplications().contains(j4));
         assertEquals(0, list.getJobApplications().size());
     }
 
@@ -96,14 +95,13 @@ public class JobApplicationListTest {
 
     @Test
     public void testCountSubmitted() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
+        addAllJobApplicationsToList();
         assertEquals(4, list.count(SUBMITTED));
 
         j4.setStatus(ACCEPTED);
         j2.setStatus(REJECTED);
+        assertEquals(2, list.count(SUBMITTED));
+
         list.remove(j1);
         assertEquals(1, list.count(SUBMITTED));
 
@@ -113,15 +111,15 @@ public class JobApplicationListTest {
 
     @Test
     public void testCountInterviewed() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
-        j1.setStatus(INTERVIEWED);
-        j3.setStatus(INTERVIEWED);
-        assertEquals(2, list.count(INTERVIEWED));
+        addAllJobApplicationsToList();
+        setAllJobApplicationsToStatus(INTERVIEWED);
+        assertEquals(4, list.count(INTERVIEWED));
 
         list.remove(j1);
+        list.remove(j2);
+        assertEquals(2, list.count(INTERVIEWED));
+
+        list.remove(j4);
         assertEquals(1, list.count(INTERVIEWED));
 
         j3.setStatus(ACCEPTED);
@@ -130,17 +128,15 @@ public class JobApplicationListTest {
 
     @Test
     public void testCountAccepted() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
-        j1.setStatus(ACCEPTED);
-        j4.setStatus(ACCEPTED);
-        j3.setStatus(ACCEPTED);
-        assertEquals(3, list.count(ACCEPTED));
+        addAllJobApplicationsToList();
+        setAllJobApplicationsToStatus(ACCEPTED);
+        assertEquals(4, list.count(ACCEPTED));
 
         j1.setStatus(REJECTED);
         list.remove(j4);
+        assertEquals(2, list.count(ACCEPTED));
+
+        j2.setStatus(SUBMITTED);
         assertEquals(1, list.count(ACCEPTED));
 
         list.remove(j3);
@@ -149,14 +145,13 @@ public class JobApplicationListTest {
 
     @Test
     public void testCountRejected() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
-        j1.setStatus(REJECTED);
-        j4.setStatus(REJECTED);
-        j3.setStatus(REJECTED);
-        assertEquals(3, list.count(REJECTED));
+        addAllJobApplicationsToList();
+        setAllJobApplicationsToStatus(REJECTED);
+        assertEquals(4, list.count(REJECTED));
+
+        j2.setStatus(ACCEPTED);
+        j4.setStatus(INTERVIEWED);
+        assertEquals(2, list.count(REJECTED));
 
         j1.setStatus(ACCEPTED);
         list.remove(j4);
@@ -168,10 +163,7 @@ public class JobApplicationListTest {
 
     @Test
     public void testCalculatePercentageSubmitted() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
+        addAllJobApplicationsToList();
         assertEquals(1.0, list.calculatePercentage(SUBMITTED), 0.01);
 
         j4.setStatus(ACCEPTED);
@@ -186,14 +178,8 @@ public class JobApplicationListTest {
 
     @Test
     public void testCalculatePercentageInterviewed() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
-        j1.setStatus(INTERVIEWED);
-        j2.setStatus(INTERVIEWED);
-        j3.setStatus(INTERVIEWED);
-        j4.setStatus(INTERVIEWED);
+        addAllJobApplicationsToList();
+        setAllJobApplicationsToStatus(INTERVIEWED);
         assertEquals(1.0, list.calculatePercentage(INTERVIEWED), 0.01);
 
         j2.setStatus(ACCEPTED);
@@ -207,14 +193,8 @@ public class JobApplicationListTest {
 
     @Test
     public void testCalculatePercentageAccepted() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
-        j1.setStatus(ACCEPTED);
-        j2.setStatus(ACCEPTED);
-        j3.setStatus(ACCEPTED);
-        j4.setStatus(ACCEPTED);
+        addAllJobApplicationsToList();
+        setAllJobApplicationsToStatus(ACCEPTED);
         assertEquals(1.0, list.calculatePercentage(ACCEPTED), 0.01);
 
         j2.setStatus(REJECTED);
@@ -228,23 +208,38 @@ public class JobApplicationListTest {
 
     @Test
     public void testCalculatePercentageRejected() {
-        list.add(j1);
-        list.add(j2);
-        list.add(j3);
-        list.add(j4);
-        j1.setStatus(REJECTED);
-        j2.setStatus(REJECTED);
-        j3.setStatus(REJECTED);
-        j4.setStatus(REJECTED);
+        addAllJobApplicationsToList();
+        setAllJobApplicationsToStatus(REJECTED);
         assertEquals(1.0, list.calculatePercentage(REJECTED), 0.01);
 
         j2.setStatus(ACCEPTED);
         j1.setStatus(ACCEPTED);
         assertEquals(0.5, list.calculatePercentage(REJECTED), 0.01);
 
-        list.remove(j1);
         list.remove(j3);
         list.remove(j4);
         assertEquals(0.0, list.calculatePercentage(REJECTED), 0.01);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: adds all instantiated job applications to the list
+     */
+    private void addAllJobApplicationsToList() {
+        list.add(j1);
+        list.add(j2);
+        list.add(j3);
+        list.add(j4);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: sets the status of all instantiated job applications to given status
+     */
+    private void setAllJobApplicationsToStatus(JobApplicationStatus status) {
+        j1.setStatus(status);
+        j2.setStatus(status);
+        j3.setStatus(status);
+        j4.setStatus(status);
     }
 }
