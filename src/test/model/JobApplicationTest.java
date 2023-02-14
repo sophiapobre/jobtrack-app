@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import static model.JobApplicationStatus.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Represents the tests for the JobApplication class
 class JobApplicationTest {
     private JobApplication j1;
     private JobApplication j2;
@@ -60,16 +61,27 @@ class JobApplicationTest {
     }
 
     @Test
+    public void testEqualsNull() {
+        JobApplication j3 = null;
+        assertFalse(j2.equals(j3));
+    }
+
+    @Test
     public void testEqualsDifferentClasses() {
         assertFalse(j2.equals("2023-02-07"));
     }
 
     @Test
     public void testEqualsSameClassSameFields() {
+        j2.setSubmissionDate("2023-02-01");
+        j2.setCompanyName("Workday");
+        j2.setRoleName("Software Developer Co-op");
+        assertTrue(j2.equals(j1));
         assertTrue(j2.equals(j2));
     }
 
     @Test
+    @SuppressWarnings("methodlength")
     public void testEqualsSameClassDifferentFields() {
         assertFalse(j2.equals(j1));
 
