@@ -6,9 +6,13 @@ import java.io.FileNotFoundException;
 public class Main {
 
     /*
-     * EFFECTS: creates a new JobTrackApp
+     * EFFECTS: creates a new JobTrackApp, prints error message if file requested by user cannot be found
      */
     public static void main(String[] args) {
-        new JobTrackApp();
+        try {
+            new JobTrackApp();
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("ERROR: Cannot load application because the file was not found.");
+        }
     }
 }
