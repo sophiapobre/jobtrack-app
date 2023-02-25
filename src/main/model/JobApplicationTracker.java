@@ -5,8 +5,6 @@ import org.json.JSONObject;
 import persistence.Writable;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 // Represents a collection of job applications
 public class JobApplicationTracker implements Writable {
