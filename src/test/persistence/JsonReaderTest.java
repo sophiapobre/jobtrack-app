@@ -27,7 +27,7 @@ public class JsonReaderTest extends JsonTest {
     }
 
     @Test
-    void testReaderEmptyJobApplicationTracker() {
+    public void testReaderEmptyJobApplicationTracker() {
         JsonReader reader = new JsonReader("./data/testReaderEmptyJobApplicationTracker.json");
 
         try {
@@ -40,7 +40,7 @@ public class JsonReaderTest extends JsonTest {
     }
 
     @Test
-    void testReaderTypicalJobApplicationTracker() {
+    public void testReaderTypicalJobApplicationTracker() {
         JsonReader reader = new JsonReader("./data/testReaderTypicalJobApplicationTracker.json");
 
         try {
