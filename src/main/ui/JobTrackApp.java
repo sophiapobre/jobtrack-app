@@ -4,6 +4,7 @@ import model.JobApplication;
 import model.JobApplicationTracker;
 import model.JobApplicationStatus;
 import persistence.JsonReader;
+import persistence.JsonWriter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,12 +25,13 @@ public class JobTrackApp {
     private Scanner input; // the scanner for user input
     private JobApplicationTracker jobApplicationTracker; // the tracker containing the user's job applications
     private JsonReader jsonReader; // the JSON file reader
+    private JsonWriter jsonWriter; // the JSON file writer
 
     /*
      * MODIFIES: this
      * EFFECTS: runs the JobTrack application, throws FileNotFoundException if the file requested by user is not found
      */
-    public JobTrackApp() throws FileNotFoundException {
+    public JobTrackApp() {
         runJobTrackApp();
     }
 
@@ -73,6 +75,7 @@ public class JobTrackApp {
         jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
         input = new Scanner(System.in);
         jsonReader = new JsonReader(JSON_STORE);
+        jsonWriter = new JsonWriter(JSON_STORE);
     }
 
     /*
@@ -83,6 +86,7 @@ public class JobTrackApp {
     private void showOptionToLoad() {
         System.out.println("Would you like to load your data from file? Type yes or no and press Enter:");
         String command = input.nextLine();
+        command = command.toLowerCase();
 
         if (command.equals(YES_COMMAND)) {
             loadJobApplicationTracker();
@@ -93,13 +97,14 @@ public class JobTrackApp {
 
     /*
      * MODIFIES: this
-     * EFFECTS: loads job application tracker from file
+     * EFFECTS: loads job application tracker from file, prints error message in case of IOException
      * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
      */
     private void loadJobApplicationTracker() {
         try {
             jobApplicationTracker = jsonReader.read();
-            System.out.println("Successfully loaded '" + jobApplicationTracker.getName() + "' from " + JSON_STORE);
+            System.out.println("Successfully loaded '" + jobApplicationTracker.getName() + "' from " + JSON_STORE
+                    + ".");
         } catch (IOException ioe) {
             System.out.println("ERROR: '" + JSON_STORE + "' could not be read.");
         }
@@ -126,6 +131,37 @@ public class JobTrackApp {
 
         if (jobApplicationTracker.getJobApplications().size() == 0) {
             System.out.println("TIP: Unlock more options by adding your first job application now!");
+        }
+    }
+
+    /*
+     * EFFECTS: presents user with the option to save data, saves data to file if user says yes and prints
+     *          confirmation message if user says no
+     */
+    private void showOptionToSave() {
+        System.out.println("Would you like to save your work before quitting? Type yes or no and press Enter:");
+        String command = input.nextLine();
+        command = command.toLowerCase();
+
+        if (command.equals(YES_COMMAND)) {
+            saveJobApplicationTracker();
+        } else if (command.equals(NO_COMMAND)) {
+            System.out.println("Your data will not be saved.");
+        }
+    }
+
+    /*
+     * EFFECTS: saves the job application tracker to file, prints error message in case of FileNotFoundException
+     * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
+     */
+    private void saveJobApplicationTracker() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(jobApplicationTracker);
+            jsonWriter.close();
+            System.out.println("Successfully saved '" + jobApplicationTracker.getName() + "' to " + JSON_STORE + ".");
+        } catch (FileNotFoundException e) {
+            System.out.println("ERROR: " + JSON_STORE + " could not be written to. Your data will not be saved.");
         }
     }
 
@@ -263,21 +299,6 @@ public class JobTrackApp {
         for (JobApplicationStatus s : JobApplicationStatus.values()) {
             System.out.println(s + ": " + String.format("%.2f", jobApplicationTracker.calculatePercentage(s) * 100.0)
                                 + "%");
-        }
-    }
-
-    /*
-     * EFFECTS: presents the user with the option to save data, saves data to file if user says yes
-     */
-    private void showOptionToSave() {
-        System.out.println("Would you like to save your work before quitting? Type yes or no and press Enter:");
-        String command = input.nextLine();
-
-        if (command.equals(YES_COMMAND)) {
-            // stub
-            System.out.println("Your data has been saved.");
-        } else if (command.equals(NO_COMMAND)) {
-            System.out.println("Your data will not be saved.");
         }
     }
 }
