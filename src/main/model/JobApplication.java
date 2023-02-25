@@ -1,11 +1,14 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.time.LocalDate;
 
 import static model.JobApplicationStatus.SUBMITTED;
 
 // Represents a job application that has a submission date, company name, role name, and status
-public class JobApplication {
+public class JobApplication implements Writable {
     private LocalDate submissionDate; // the date when this job application was submitted
     private String companyName; // the name of the company that received this application
     private String roleName; // the name of the role applied to
@@ -99,5 +102,18 @@ public class JobApplication {
         } else {
             return false;
         }
+    }
+
+    /*
+     * EFFECTS: returns this as a JSON object
+     */
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("submissionDate", submissionDate);
+        json.put("companyName", companyName);
+        json.put("roleName", roleName);
+        json.put("status", status);
+        return json;
     }
 }

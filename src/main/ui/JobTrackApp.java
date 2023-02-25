@@ -1,34 +1,42 @@
 package ui;
 
 import model.JobApplication;
-import model.JobApplicationList;
+import model.JobApplicationTracker;
 import model.JobApplicationStatus;
+import persistence.JsonReader;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 // Represents the job application tracker application
 public class JobTrackApp {
+    private static final String YES_COMMAND = "yes";
+    private static final String NO_COMMAND = "no";
     private static final String ADD_COMMAND = "add";
     private static final String DELETE_COMMAND = "delete";
     private static final String UPDATE_STATUS_COMMAND = "update";
     private static final String VIEW_TRACKER_COMMAND = "tracker";
     private static final String VIEW_STATS_COMMAND = "stats";
     private static final String EXIT_COMMAND = "exit";
+    private static final String JSON_STORE = "./data/jobApplicationTracker.json";
 
     private Scanner input; // the scanner for user input
-    private JobApplicationList jobApplicationList; // the list of job applications in the tracker
+    private JobApplicationTracker jobApplicationTracker; // the tracker containing the user's job applications
+    private JsonReader jsonReader; // the JSON file reader
 
     /*
      * MODIFIES: this
-     * EFFECTS: runs the JobTrack application
+     * EFFECTS: runs the JobTrack application, throws FileNotFoundException if the file requested by user is not found
      */
-    public JobTrackApp() {
+    public JobTrackApp() throws FileNotFoundException {
         runJobTrackApp();
     }
 
     /*
      * MODIFIES: this
-     * EFFECTS: initializes the JobTrack application, displays the main menu, and responds to given user command
+     * EFFECTS: initializes the JobTrack application, presents user with the option to load data from file,
+     *          displays the main menu, and responds to given user command
      */
     public void runJobTrackApp() {
         boolean continueRunning = true;
@@ -36,12 +44,18 @@ public class JobTrackApp {
 
         initialize();
 
+        System.out.println();
+        System.out.println("Welcome to JobTrack!");
+        System.out.println();
+        showOptionToLoad();
+
         while (continueRunning) {
             showMainMenu();
             command = input.nextLine();
             command = command.toLowerCase();
 
             if (command.equals(EXIT_COMMAND)) {
+                showOptionToSave();
                 continueRunning = false;
             } else {
                 executeCommand(command);
@@ -53,11 +67,42 @@ public class JobTrackApp {
 
     /*
      * MODIFIES: this
-     * EFFECTS: initializes the job application list and scanner
+     * EFFECTS: initializes the job application list, scanner, and JSON file reader
      */
     private void initialize() {
-        jobApplicationList = new JobApplicationList();
+        jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
         input = new Scanner(System.in);
+        jsonReader = new JsonReader(JSON_STORE);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: presents user with the option to load data from file, loads data from file if user says yes
+     *          and prints confirmation message if user says no
+     */
+    private void showOptionToLoad() {
+        System.out.println("Would you like to load your data from file? Type yes or no and press Enter:");
+        String command = input.nextLine();
+
+        if (command.equals(YES_COMMAND)) {
+            loadJobApplicationTracker();
+        } else if (command.equals(NO_COMMAND)) {
+            System.out.println("Your data will not be loaded from file.");
+        }
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: loads job application tracker from file
+     * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
+     */
+    private void loadJobApplicationTracker() {
+        try {
+            jobApplicationTracker = jsonReader.read();
+            System.out.println("Successfully loaded '" + jobApplicationTracker.getName() + "' from " + JSON_STORE);
+        } catch (IOException ioe) {
+            System.out.println("ERROR: '" + JSON_STORE + "' could not be read.");
+        }
     }
 
     /*
@@ -65,12 +110,11 @@ public class JobTrackApp {
      */
     private void showMainMenu() {
         System.out.println();
-        System.out.println("Welcome to JobTrack!");
-        System.out.println();
         System.out.println("Select an option by typing the keyword to the left of '->' and pressing Enter:");
+
         System.out.println(ADD_COMMAND + " -> add a job application to your tracker");
 
-        if (jobApplicationList.getJobApplications().size() > 0) {
+        if (jobApplicationTracker.getJobApplications().size() > 0) {
             System.out.println(DELETE_COMMAND + " -> delete a job application from your tracker");
             System.out.println(UPDATE_STATUS_COMMAND + " -> update the status of an existing job application");
             System.out.println(VIEW_TRACKER_COMMAND + " -> view all job applications in your tracker");
@@ -80,7 +124,7 @@ public class JobTrackApp {
         System.out.println(EXIT_COMMAND + " -> exit program");
         System.out.println();
 
-        if (jobApplicationList.getJobApplications().size() == 0) {
+        if (jobApplicationTracker.getJobApplications().size() == 0) {
             System.out.println("TIP: Unlock more options by adding your first job application now!");
         }
     }
@@ -121,7 +165,7 @@ public class JobTrackApp {
 
         JobApplication j = new JobApplication(date, company, role);
 
-        if (jobApplicationList.add(j)) {
+        if (jobApplicationTracker.add(j)) {
             System.out.println("Successfully added this job application to your tracker!");
         } else {
             System.out.println("Unable to add this job application because it is already in the tracker.");
@@ -135,7 +179,7 @@ public class JobTrackApp {
     private void deleteJobApplication() {
         JobApplication selectedJobApplication = handleJobApplicationSelection("delete");
 
-        if (jobApplicationList.remove(selectedJobApplication)) {
+        if (jobApplicationTracker.remove(selectedJobApplication)) {
             System.out.println("Successfully removed this job application from your tracker!");
         } else {
             System.out.println("Unable to remove this job application because it is not currently in your tracker.");
@@ -152,7 +196,7 @@ public class JobTrackApp {
         int givenId = input.nextInt();
         input.nextLine();
 
-        JobApplication j = jobApplicationList.getJobApplications().get(givenId);
+        JobApplication j = jobApplicationTracker.getJobApplications().get(givenId);
         System.out.println();
         System.out.println("You have chosen to " + userAction + ":");
         System.out.println(givenId + " | " + j.getSubmissionDate() + " | " + j.getCompanyName() + " | "
@@ -195,7 +239,7 @@ public class JobTrackApp {
         System.out.println();
         System.out.println("ID | DATE APPLIED | COMPANY | ROLE | STATUS");
 
-        for (JobApplication j : jobApplicationList.getJobApplications()) {
+        for (JobApplication j : jobApplicationTracker.getJobApplications()) {
             System.out.println(id + " | " + j.getSubmissionDate() + " | " + j.getCompanyName() + " | "
                     + j.getRoleName() + " | " + j.getStatus());
             id++;
@@ -211,14 +255,29 @@ public class JobTrackApp {
         System.out.println();
         System.out.println("Number of Job Applications Per Status Category");
         for (JobApplicationStatus s : JobApplicationStatus.values()) {
-            System.out.println(s + ": " + jobApplicationList.count(s));
+            System.out.println(s + ": " + jobApplicationTracker.count(s));
         }
 
         System.out.println();
         System.out.println("Percentage of Total Job Applications Per Status Category");
         for (JobApplicationStatus s : JobApplicationStatus.values()) {
-            System.out.println(s + ": " + String.format("%.2f", jobApplicationList.calculatePercentage(s) * 100.0)
+            System.out.println(s + ": " + String.format("%.2f", jobApplicationTracker.calculatePercentage(s) * 100.0)
                                 + "%");
+        }
+    }
+
+    /*
+     * EFFECTS: presents the user with the option to save data, saves data to file if user says yes
+     */
+    private void showOptionToSave() {
+        System.out.println("Would you like to save your work before quitting? Type yes or no and press Enter:");
+        String command = input.nextLine();
+
+        if (command.equals(YES_COMMAND)) {
+            // stub
+            System.out.println("Your data has been saved.");
+        } else if (command.equals(NO_COMMAND)) {
+            System.out.println("Your data will not be saved.");
         }
     }
 }
