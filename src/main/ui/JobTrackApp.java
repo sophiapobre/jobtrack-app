@@ -27,9 +27,9 @@ public class JobTrackApp {
 
     /*
      * MODIFIES: this
-     * EFFECTS: runs the JobTrack application, throws FileNotFoundException if the file requested by user is not found
+     * EFFECTS: runs the JobTrack application
      */
-    public JobTrackApp() throws FileNotFoundException {
+    public JobTrackApp() {
         runJobTrackApp();
     }
 
@@ -101,7 +101,7 @@ public class JobTrackApp {
             jobApplicationTracker = jsonReader.read();
             System.out.println("Successfully loaded '" + jobApplicationTracker.getName() + "' from " + JSON_STORE);
         } catch (IOException ioe) {
-            System.out.println("ERROR: '" + JSON_STORE + "' could not be read.");
+            System.out.println("ERROR: " + JSON_STORE + " could not be read. Your data will not be loaded from file.");
         }
     }
 
