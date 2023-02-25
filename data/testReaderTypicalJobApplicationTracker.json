@@ -1,4 +1,5 @@
 {
+    "name": "Sophia's Job Application Tracker",
     "jobApplicationList": [
         {
             "submissionDate": "2023-02-05",
@@ -24,6 +25,5 @@
           "roleName": "Tech Lead",
           "status": "ACCEPTED"
         }
-    ],
-    "name": "Sophia's Job Application Tracker"
+    ]
 }
