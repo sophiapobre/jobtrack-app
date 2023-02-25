@@ -4,7 +4,6 @@ import model.JobApplication;
 import model.JobApplicationStatus;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
