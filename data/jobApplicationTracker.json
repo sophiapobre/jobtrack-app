@@ -1,4 +1,29 @@
 {
-  "name": "Sophia's Job Application Tracker",
-  "jobApplicationList": []
+    "name": "Sophia's Job Application Tracker",
+    "jobApplicationList": [
+        {
+            "companyName": "Workday",
+            "roleName": "Product Manager",
+            "submissionDate": "2023-05-05",
+            "status": "INTERVIEWED"
+        },
+        {
+            "companyName": "Microsoft",
+            "roleName": "Product Marketing Manager",
+            "submissionDate": "2019-06-20",
+            "status": "ACCEPTED"
+        },
+        {
+            "companyName": "UBC",
+            "roleName": "Teaching Assistant",
+            "submissionDate": "2023-02-28",
+            "status": "SUBMITTED"
+        },
+        {
+            "companyName": "Lululemon",
+            "roleName": "Marketing Manager",
+            "submissionDate": "2023-02-28",
+            "status": "SUBMITTED"
+        }
+    ]
 }
