@@ -135,6 +135,7 @@ public class JobTrackApp {
     }
 
     /*
+     * MODIFIES: this
      * EFFECTS: presents user with the option to save data, saves data to file if user says yes and prints
      *          confirmation message if user says no
      */
@@ -151,6 +152,7 @@ public class JobTrackApp {
     }
 
     /*
+     * MODIFIES: this
      * EFFECTS: saves the job application tracker to file, prints error message in case of FileNotFoundException
      * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
      */
@@ -223,6 +225,7 @@ public class JobTrackApp {
     }
 
     /*
+     * MODIFIES: this
      * EFFECTS: prompts the user to select a job application from the tracker and returns the job application
      *          selected by the user
      */
