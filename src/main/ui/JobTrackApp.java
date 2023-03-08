@@ -29,7 +29,7 @@ public class JobTrackApp {
 
     /*
      * MODIFIES: this
-     * EFFECTS: runs the JobTrack application, throws FileNotFoundException if the file requested by user is not found
+     * EFFECTS: runs the JobTrack application
      */
     public JobTrackApp() {
         runJobTrackApp();
