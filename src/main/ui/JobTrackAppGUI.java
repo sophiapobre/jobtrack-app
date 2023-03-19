@@ -103,14 +103,20 @@ public class JobTrackAppGUI extends JFrame {
     public void displayLoadDataPrompt() {
         String[] options = {"No", "Yes"};
         int response = JOptionPane.showOptionDialog(null,
-                "Would you like to load your data from file?", "Load Data", 1, 3,
-                null, options, null);
+                "Would you like to load your data from file?", "Load Data", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, options, null);
 
         if (response == 0) {
-            JOptionPane.showMessageDialog(null, "Your data will not be loaded.");
+            JOptionPane.showMessageDialog(null, "Your data will not be loaded.",
+                    "Confirmation", JOptionPane.INFORMATION_MESSAGE);
         } else if (response == 1) {
             String outcome = loadJobApplicationTracker();
-            JOptionPane.showMessageDialog(null, outcome);
+
+            if (outcome.contains("Successfully")) {
+                JOptionPane.showMessageDialog(null, outcome, "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, outcome, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
