@@ -102,22 +102,37 @@ public class JobTrackAppGUI extends JFrame {
      *          depending on user selection and whether data was loaded successfully
      */
     public void displayLoadDataPrompt() {
-        String[] options = {"No", "Yes"};
-        int response = JOptionPane.showOptionDialog(null,
-                "Would you like to load your data from file?", "Load Data", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, null, options, null);
+        int response = displayYesOrNoPrompt("load");
 
         if (response == 0) {
             JOptionPane.showMessageDialog(null, "Your data will not be loaded.",
                     "Confirmation", JOptionPane.INFORMATION_MESSAGE);
         } else if (response == 1) {
-            String outcome = loadJobApplicationTracker();
+            displayOutcomeMessage(loadJobApplicationTracker());
+        }
+    }
 
-            if (outcome.contains("Successfully")) {
-                JOptionPane.showMessageDialog(null, outcome, "Confirmation", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, outcome, "Error", JOptionPane.ERROR_MESSAGE);
-            }
+    /*
+     * EFFECTS: asks the user if they want to either save or load their data from file, depending on given action;
+     *          returns 0 if user selects no and 1 if user selects yes
+     */
+    private int displayYesOrNoPrompt(String action) {
+        String[] options = {"No", "Yes"};
+        int selection = JOptionPane.showOptionDialog(null,
+                "Would you like to " + action + " your data?", "Load Data",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
+        return selection;
+    }
+
+    /*
+     * EFFECTS: displays the given outcome in either a confirmation or error message, depending on whether given outcome
+     *          contains "Successfully"
+     */
+    private void displayOutcomeMessage(String outcome) {
+        if (outcome.contains("Successfully")) {
+            JOptionPane.showMessageDialog(null, outcome, "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, outcome, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -160,6 +175,7 @@ public class JobTrackAppGUI extends JFrame {
         menuBar.add(trackerOption);
 
         JMenuItem quitOption = new JMenuItem("Quit JobTrack");
+        quitOption.addActionListener(e -> displaySaveDataPrompt());
         jobTrackOption.add(quitOption);
 
         JMenuItem addOption = new JMenuItem("Add Job Application");
@@ -178,6 +194,22 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
+     * EFFECTS: asks the user if they want to save their data to file, displays message dialog containing message
+     *          depending on user selection and whether data was saved successfully
+     */
+    public void displaySaveDataPrompt() {
+        int response = displayYesOrNoPrompt("save");
+
+        if (response == 0) {
+            JOptionPane.showMessageDialog(null, "Your data will not be saved.",
+                    "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+        } else if (response == 1) {
+            displayOutcomeMessage(saveJobApplicationTracker());
+        }
+    }
+
+    /*
+     * MODIFIES: this
      * EFFECTS: makes all components visible
      */
     public void showAllComponents() {
@@ -189,14 +221,14 @@ public class JobTrackAppGUI extends JFrame {
      * EFFECTS: saves job application tracker to file, returns message indicating whether file was successfully saved
      * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
      */
-    private void saveJobApplicationTracker() {
+    private String saveJobApplicationTracker() {
         try {
             jsonWriter.open();
             jsonWriter.write(jobApplicationTracker);
             jsonWriter.close();
-            System.out.println("Successfully saved '" + jobApplicationTracker.getName() + "' to " + JSON_STORE + ".");
+            return "Successfully saved '" + jobApplicationTracker.getName() + "'.";
         } catch (FileNotFoundException e) {
-            System.out.println("ERROR: " + JSON_STORE + " could not be written to. Your data will not be saved.");
+            return "ERROR: " + JSON_STORE + " could not be written to. Your data will not be saved.";
         }
     }
 }
