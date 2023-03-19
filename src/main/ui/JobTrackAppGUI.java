@@ -11,10 +11,10 @@ import java.io.IOException;
 
 // Represents the JobTrack Application GUI
 public class JobTrackAppGUI extends JFrame {
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 800;
-    private static final String JSON_STORE = "./data/jobApplicationTracker.json";
-    private static final String LOGO_STORE = "./data/jobTrackLogo.png";
+    public static final int WIDTH = 1000; // the width of this window
+    public static final int HEIGHT = 800; // the height of this window
+    private static final String JSON_STORE = "./data/jobApplicationTracker.json"; // the file path to user data
+    private static final String LOGO_STORE = "./data/jobTrackLogo.png"; // the file path to the JobTrack logo
 
     private JobApplicationTracker jobApplicationTracker; // the tracker containing the user's job applications
     private JsonReader jsonReader; // the JSON file reader
