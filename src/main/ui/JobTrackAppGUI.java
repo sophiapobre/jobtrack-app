@@ -6,6 +6,7 @@ import persistence.JsonWriter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 // Represents the JobTrack Application GUI
@@ -123,6 +124,7 @@ public class JobTrackAppGUI extends JFrame {
     /*
      * MODIFIES: this
      * EFFECTS: loads job application tracker from file, returns message indicating whether file was successfully read
+     * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
      */
     private String loadJobApplicationTracker() {
         try {
@@ -144,19 +146,26 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: creates a menu bar with "Add", "Delete", and "Quit" options
+     * EFFECTS: creates a menu bar with "JobTrack" and "Tracker" options, as well as menu items for quitting, adding
+     *          a job application, and deleting a job application
      */
     public void createMenuBar() {
         menuBar = new JMenuBar();
         hideComponent(menuBar);
 
-        JMenu addOption = new JMenu("Add");
-        JMenu deleteOption = new JMenu("Delete");
-        JMenu quitOption = new JMenu("Quit");
+        JMenu jobTrackOption = new JMenu("JobTrack");
+        menuBar.add(jobTrackOption);
 
-        menuBar.add(addOption);
-        menuBar.add(deleteOption);
-        menuBar.add(quitOption);
+        JMenu trackerOption = new JMenu("Tracker");
+        menuBar.add(trackerOption);
+
+        JMenuItem quitOption = new JMenuItem("Quit JobTrack");
+        jobTrackOption.add(quitOption);
+
+        JMenuItem addOption = new JMenuItem("Add Job Application");
+        JMenuItem deleteOption = new JMenuItem("Delete Job Application");
+        trackerOption.add(addOption);
+        trackerOption.add(deleteOption);
     }
 
     /*
@@ -173,5 +182,21 @@ public class JobTrackAppGUI extends JFrame {
      */
     public void showAllComponents() {
         menuBar.setVisible(true);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: saves job application tracker to file, returns message indicating whether file was successfully saved
+     * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
+     */
+    private void saveJobApplicationTracker() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(jobApplicationTracker);
+            jsonWriter.close();
+            System.out.println("Successfully saved '" + jobApplicationTracker.getName() + "' to " + JSON_STORE + ".");
+        } catch (FileNotFoundException e) {
+            System.out.println("ERROR: " + JSON_STORE + " could not be written to. Your data will not be saved.");
+        }
     }
 }
