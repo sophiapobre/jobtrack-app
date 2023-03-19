@@ -6,6 +6,7 @@ import persistence.JsonWriter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 // Represents the JobTrack Application GUI
 public class JobTrackAppGUI extends JFrame {
@@ -55,7 +56,7 @@ public class JobTrackAppGUI extends JFrame {
         addMenuBar();
 
         displayLogoForThreeSeconds();
-
+        displayLoadDataPrompt();
         showAllComponents();
     }
 
@@ -92,6 +93,38 @@ public class JobTrackAppGUI extends JFrame {
         }
 
         hideComponent(logoLabel);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: asks the user if they want to load their data from file, displays message dialog containing message
+     *          depending on user selection and whether data was loaded successfully
+     */
+    public void displayLoadDataPrompt() {
+        String[] options = {"No", "Yes"};
+        int response = JOptionPane.showOptionDialog(null,
+                "Would you like to load your data from file?", "Load Data", 1, 3,
+                null, options, null);
+
+        if (response == 0) {
+            JOptionPane.showMessageDialog(null, "Your data will not be loaded.");
+        } else if (response == 1) {
+            String outcome = loadJobApplicationTracker();
+            JOptionPane.showMessageDialog(null, outcome);
+        }
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: loads job application tracker from file, prints error message in case of IOException
+     */
+    private String loadJobApplicationTracker() {
+        try {
+            jobApplicationTracker = jsonReader.read();
+            return "Successfully loaded '" + jobApplicationTracker.getName() + "'.";
+        } catch (IOException ioe) {
+            return "ERROR: '" + JSON_STORE + "' could not be read. Your data will not be loaded.";
+        }
     }
 
     /*
