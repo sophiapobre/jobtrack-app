@@ -116,7 +116,7 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: loads job application tracker from file, prints error message in case of IOException
+     * EFFECTS: loads job application tracker from file, returns message indicating whether file was successfully read
      */
     private String loadJobApplicationTracker() {
         try {
