@@ -4,9 +4,9 @@ package ui;
 public class Main {
 
     /*
-     * EFFECTS: creates a new JobTrackApp
+     * EFFECTS: creates a new JobTrackAppGUI
      */
     public static void main(String[] args) {
-        new JobTrackApp();
+        new JobTrackAppGUI();
     }
 }
