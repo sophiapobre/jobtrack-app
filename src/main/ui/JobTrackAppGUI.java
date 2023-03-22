@@ -49,7 +49,8 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: sets up the JFrame window where JobTrackAppGUI will run, adds components, displays logo for 3 seconds
+     * EFFECTS: sets up the JFrame window where JobTrackAppGUI will run, adds and displays logo for 3 seconds, adds
+     *          menu bar, tracker panel, and table
      */
     public void initializeGraphics() {
         setLayout(new BorderLayout());
