@@ -186,7 +186,7 @@ public class JobTrackAppGUI extends JFrame {
         JMenuItem quitOption = createQuitMenuItem();
         jobTrackOption.add(quitOption);
 
-        JMenuItem addOption = new JMenuItem("Add Job Application");
+        JMenuItem addOption = createAddJobApplicationMenuItem();
         JMenuItem deleteOption = new JMenuItem("Delete Job Application");
         trackerOption.add(addOption);
         trackerOption.add(deleteOption);
@@ -211,6 +211,82 @@ public class JobTrackAppGUI extends JFrame {
         });
 
         return quitOption;
+    }
+
+    /*
+     * EFFECTS: creates and returns a menu item to the JobTrack menu for adding a new job application
+     */
+    private JMenuItem createAddJobApplicationMenuItem() {
+        JMenuItem addOption = new JMenuItem("Add Job Application");
+        addOption.addActionListener(e -> displayAddJobApplicationPrompts());
+        return addOption;
+    }
+
+    /*
+     * REQUIRES: user either enters a non-empty string or presses cancel in all prompts
+     * EFFECTS: displays 3 prompts for the user to enter the submission date, company name, and role name and
+     *          updates tracker if user does not press cancel in any of the 3 prompts, otherwise returns without
+     *          updating the tracker
+     */
+    private void displayAddJobApplicationPrompts() {
+        String submissionDate = displaySubmissionDatePrompt();
+        if (submissionDate == null) {
+            return;
+        }
+
+        String companyName = displayCompanyNamePrompt();
+        if (companyName == null) {
+            return;
+        }
+
+        String roleName = displayRoleNamePrompt();
+        if (roleName == null) {
+            return;
+        }
+
+        updateTracker(submissionDate, companyName, roleName);
+    }
+
+    /*
+     * REQUIRES: user either enters a non-empty string in format YYYY-MM-DD or presses cancel
+     * EFFECTS: prompts user to enter a submission date; returns a null string if user pressed cancel, otherwise
+     *          returns the submission date entered by user
+     */
+    private String displaySubmissionDatePrompt() {
+        String submissionDate = JOptionPane.showInputDialog("Please enter the date you submitted this "
+                                                            + "application (YYYY-MM-DD):");
+        return submissionDate;
+    }
+
+    /*
+     * REQUIRES: user either enters a non-empty string or presses cancel
+     * EFFECTS: prompts user to enter a company name; returns a null string if user pressed cancel, otherwise
+     *          returns the company name entered by user
+     */
+    private String displayCompanyNamePrompt() {
+        String companyName = JOptionPane.showInputDialog("Please enter the name of the company you applied to:");
+        return companyName;
+    }
+
+    /*
+     * REQUIRES: user either enters a non-empty string or presses cancel
+     * EFFECTS: prompts the user to enter a role name; returns a null string if user pressed cancel, otherwise
+     *          returns the role name entered by user
+     */
+    private String displayRoleNamePrompt() {
+        String roleName = JOptionPane.showInputDialog("Please enter the name of the role you applied for:");
+        return roleName;
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: updates the tracker with a new job application containing given date, given company, given role, and
+     *          a status of SUBMITTED
+     */
+    private void updateTracker(String date, String company, String role) {
+        jobApplicationTracker.add(new JobApplication(date, company, role));
+        addTable();
+        setVisible(true);
     }
 
     /*
