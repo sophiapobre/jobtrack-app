@@ -1,5 +1,6 @@
 package ui;
 
+import model.JobApplication;
 import model.JobApplicationTracker;
 import persistence.JsonReader;
 import persistence.JsonWriter;
@@ -8,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 // Represents the JobTrack Application GUI
 public class JobTrackAppGUI extends JFrame {
@@ -22,6 +24,8 @@ public class JobTrackAppGUI extends JFrame {
 
     private JLabel logoLabel; // the label containing the JobTrack logo
     private JMenuBar menuBar; // the menu bar
+    private JPanel trackerPanel; // the panel displaying the job application tracker
+    private JTable trackerTable; // the table containing the job application tracker data
 
     /*
      * MODIFIES: this
@@ -58,7 +62,11 @@ public class JobTrackAppGUI extends JFrame {
 
         displayLogoForThreeSeconds();
         displayLoadDataPrompt();
-        showAllComponents();
+
+        addTrackerPanel();
+        addTable();
+        menuBar.setVisible(true);
+        setVisible(true);
     }
 
     /*
@@ -72,7 +80,7 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: creates the JLabel component containing the JobTrack logo
+     * EFFECTS: creates the JLabel for logoLabel and sets it to contain the JobTrack logo
      */
     public void createLogo() {
         ImageIcon logo = new ImageIcon(LOGO_STORE);
@@ -161,8 +169,8 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: creates a menu bar with "JobTrack" and "Tracker" options, as well as menu items for quitting, adding
-     *          a job application, and deleting a job application
+     * EFFECTS: creates a menu bar for menuBar with "JobTrack" and "Tracker" options, as well as menu items for
+     *          quitting, adding a job application, and deleting a job application
      */
     public void createMenuBar() {
         menuBar = new JMenuBar();
@@ -174,8 +182,7 @@ public class JobTrackAppGUI extends JFrame {
         JMenu trackerOption = new JMenu("Tracker");
         menuBar.add(trackerOption);
 
-        JMenuItem quitOption = new JMenuItem("Quit JobTrack");
-        quitOption.addActionListener(e -> displaySaveDataPrompt());
+        JMenuItem quitOption = createQuitMenuItem();
         jobTrackOption.add(quitOption);
 
         JMenuItem addOption = new JMenuItem("Add Job Application");
@@ -190,6 +197,19 @@ public class JobTrackAppGUI extends JFrame {
      */
     public void hideComponent(JComponent component) {
         component.setVisible(false);
+    }
+
+    /*
+     * EFFECTS: creates and returns a menu item to the JobTrack menu for quitting
+     */
+    private JMenuItem createQuitMenuItem() {
+        JMenuItem quitOption = new JMenuItem("Quit JobTrack");
+        quitOption.addActionListener(e -> {
+            displaySaveDataPrompt();
+            System.exit(0);
+        });
+
+        return quitOption;
     }
 
     /*
@@ -210,14 +230,6 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: makes all components visible
-     */
-    public void showAllComponents() {
-        menuBar.setVisible(true);
-    }
-
-    /*
-     * MODIFIES: this
      * EFFECTS: saves job application tracker to file, returns message indicating whether file was successfully saved
      * Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
      */
@@ -230,5 +242,74 @@ public class JobTrackAppGUI extends JFrame {
         } catch (FileNotFoundException e) {
             return "ERROR: " + JSON_STORE + " could not be written to. Your data will not be saved.";
         }
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: creates a panel for storing the tracker and adds it to the center of the window
+     */
+    public void addTrackerPanel() {
+        createTrackerPanel();
+        add(trackerPanel, BorderLayout.CENTER);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: creates a JPanel for trackerPanel and sets the layout to BorderLayout
+     */
+    private void createTrackerPanel() {
+        trackerPanel = new JPanel();
+        trackerPanel.setLayout(new BorderLayout());
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: creates a table for storing tracker data and adds it to the center of trackerPanel
+     */
+    private void addTable() {
+        createTable();
+        trackerPanel.add(new JScrollPane(trackerTable), BorderLayout.CENTER);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: creates a non-editable JTable for trackerTable for storing tracker data
+     */
+    private void createTable() {
+        String[][] data = getTableData();
+        String[] columnLabels = {"ID", "Submission Date", "Company", "Role", "Status"};
+        trackerTable = new JTable(data, columnLabels);
+        trackerTable.setEnabled(false);
+    }
+
+    /*
+     * EFFECTS: returns the array containing the user's job application tracker data
+     */
+    private String[][] getTableData() {
+        int numJobApplications = jobApplicationTracker.getJobApplications().size();
+
+        String[][] data = new String[numJobApplications][];
+
+        for (int i = 0; i < numJobApplications; i++) {
+            data[i] = getJobApplicationData(i);
+        }
+
+        return data;
+    }
+
+    /*
+     * EFFECTS: returns an array of strings containing the id, submission date, company, role, and status of the job
+     *          application at the given index
+     */
+    private String[] getJobApplicationData(int index) {
+        ArrayList<JobApplication> jobApplicationList = jobApplicationTracker.getJobApplications();
+
+        String id = Integer.toString(index);
+        String submissionDate = jobApplicationList.get(index).getSubmissionDate().toString();
+        String company = jobApplicationList.get(index).getCompanyName();
+        String role = jobApplicationList.get(index).getRoleName();
+        String status = String.valueOf(jobApplicationList.get(index).getStatus());
+
+        return new String[]{id, submissionDate, company, role, status};
     }
 }
