@@ -15,3 +15,11 @@ I wanted to create *JobTrack* to monitor the countless job applications I've sub
 - As a user, I want to be able to view the number and percentage of job applications under each status category
 - As a user, I want to be given the option to save (or not save) my tracker to file when I decide to quit the application
 - As a user, I want to be given the option to load (or not load) my tracker from file upon launching the application
+
+# Instructions for Grader
+
+- You can generate the first required action related to adding Xs to a Y by clicking "Tracker" and then "Add Job Application" on the menu bar. You must then enter a valid submission date (i.e., a non-empty string in YYYY-MM-DD format) and press OK, enter a valid company name (i.e., non-empty string) and press OK, and enter a valid role name (i.e., non-empty string) and press OK. The job application with your inputs will then be displayed as a new row in the tracker. Note that a job application with your given submission date, company name, and role name must not already exist in the tracker prior to this action.
+- You can generate the second required action related to adding Xs to a Y by clicking "Tracker" and then "Delete All Job Applications" on the menu bar. You must then press the "Yes" button when a prompt asks if you would like to delete all your data, and press the "OK" button when a confirmation prompt appears. The tracker will then appear empty.
+- You can locate my visual component (i.e., the JobTrack logo) by simply launching the application. The image will be displayed for 3 seconds and then automatically disappear when you are asked whether you want to load your data.
+- You can save the state of my application by clicking "JobTrack" and then "Quit JobTrack" on the menu bar, and then pressing the "Yes" button when a prompt asks if you would like to save your data.
+- You can reload the state of my application by launching the application and pressing the "Yes" button when a prompt asks if you would like to load your data.
