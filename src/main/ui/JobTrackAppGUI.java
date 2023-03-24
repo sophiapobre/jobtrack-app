@@ -1,11 +1,13 @@
 package ui;
 
 import model.JobApplication;
+import model.JobApplicationStatus;
 import model.JobApplicationTracker;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,6 +28,7 @@ public class JobTrackAppGUI extends JFrame {
     private JMenuBar menuBar; // the menu bar
     private JPanel trackerPanel; // the panel displaying the job application tracker
     private JTable trackerTable; // the table containing the job application tracker data
+    private DefaultTableModel tableModel; // the model for the table data
 
     /*
      * MODIFIES: this
@@ -106,6 +109,7 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
+     * REQUIRES: response == 0 or response == 1
      * MODIFIES: this
      * EFFECTS: asks the user if they want to load their data from file, displays message dialog containing message
      *          depending on user selection and whether data was loaded successfully
@@ -122,13 +126,14 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * EFFECTS: asks the user if they want to either save or load their data from file, depending on given action;
+     * REQUIRES: action == "save" or action == "load" or action == "delete all"
+     * EFFECTS: asks the user if they want to either save, load, or delete all their data, depending on given action;
      *          returns 0 if user selects no and 1 if user selects yes
      */
     private int displayYesOrNoPrompt(String action) {
         String[] options = {"No", "Yes"};
         int selection = JOptionPane.showOptionDialog(null,
-                "Would you like to " + action + " your data?", "Load Data",
+                "Would you like to " + action + " your data?", "Data",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
         return selection;
     }
@@ -186,8 +191,8 @@ public class JobTrackAppGUI extends JFrame {
         JMenuItem quitOption = createQuitMenuItem();
         jobTrackOption.add(quitOption);
 
-        JMenuItem addOption = createAddJobApplicationMenuItem();
-        JMenuItem deleteOption = new JMenuItem("Delete Job Application");
+        JMenuItem addOption = createAddMenuItem();
+        JMenuItem deleteOption = createDeleteAllMenuItem();
         trackerOption.add(addOption);
         trackerOption.add(deleteOption);
     }
@@ -216,7 +221,7 @@ public class JobTrackAppGUI extends JFrame {
     /*
      * EFFECTS: creates and returns a menu item to the JobTrack menu for adding a new job application
      */
-    private JMenuItem createAddJobApplicationMenuItem() {
+    private JMenuItem createAddMenuItem() {
         JMenuItem addOption = new JMenuItem("Add Job Application");
         addOption.addActionListener(e -> displayAddJobApplicationPrompts());
         return addOption;
@@ -225,8 +230,8 @@ public class JobTrackAppGUI extends JFrame {
     /*
      * REQUIRES: user either enters a non-empty string or presses cancel in all prompts
      * EFFECTS: displays 3 prompts for the user to enter the submission date, company name, and role name and
-     *          updates tracker if user does not press cancel in any of the 3 prompts, otherwise returns without
-     *          updating the tracker
+     *          adds the job application with the given inputs to the tracker if user does not press cancel in any of
+     *          the 3 prompts, otherwise returns without updating the tracker
      */
     private void displayAddJobApplicationPrompts() {
         String submissionDate = displaySubmissionDatePrompt();
@@ -244,7 +249,37 @@ public class JobTrackAppGUI extends JFrame {
             return;
         }
 
-        updateTracker(submissionDate, companyName, roleName);
+        addJobApplicationToTracker(submissionDate, companyName, roleName);
+    }
+
+    /*
+     * REQUIRES: submissionDate, companyName, and roleName are not empty and not null; job application with given
+     *           inputs are not already in the tracker
+     * MODIFIES: this
+     * EFFECTS: creates a new job application and adds it to the tracker, adds a row with the given information to the
+     *          tracker table
+     */
+    private void addJobApplicationToTracker(String submissionDate, String companyName, String roleName) {
+        jobApplicationTracker.add(new JobApplication(submissionDate, companyName, roleName));
+
+        int id = getIndexOfLastJobApplication();
+        JobApplicationStatus status = getStatusOfJobApplication(id);
+        addRowToTable(submissionDate, companyName, roleName, String.valueOf(status));
+    }
+
+    /*
+     * EFFECTS: returns the index of the most recently added job application
+     */
+    private int getIndexOfLastJobApplication() {
+        return jobApplicationTracker.getJobApplications().size() - 1;
+    }
+
+    /*
+     * REQUIRES: id >= 0 && id < the number of job applications in the tracker
+     * EFFECTS: returns the status of the job application at the given index
+     */
+    private JobApplicationStatus getStatusOfJobApplication(int index) {
+        return jobApplicationTracker.getJobApplications().get(index).getStatus();
     }
 
     /*
@@ -280,13 +315,54 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: updates the tracker with a new job application containing given date, given company, given role, and
-     *          a status of SUBMITTED
+     * EFFECTS: creates and returns a menu item to the JobTrack menu for deleting all job applications
      */
-    private void updateTracker(String date, String company, String role) {
-        jobApplicationTracker.add(new JobApplication(date, company, role));
-        addTable();
-        setVisible(true);
+    private JMenuItem createDeleteAllMenuItem() {
+        JMenuItem deleteOption = new JMenuItem("Delete All Job Applications");
+        deleteOption.addActionListener(e -> {
+            displayDeleteJobApplicationPrompt();
+        });
+        return deleteOption;
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: asks the user if they want to delete all their job applications, displays message dialog containing
+     *          confirmation message depending on user response; deletes all job applications in the tracker and updates
+     *          the tracker table if user selected yes
+     */
+    private void displayDeleteJobApplicationPrompt() {
+        int response = displayYesOrNoPrompt("delete all");
+
+        displayDeleteConfirmationMessage(response);
+
+        if (response == 1) {
+            deleteAllJobApplications();
+        }
+    }
+
+    /*
+     * REQUIRES: response == 0 or response == 1
+     * EFFECTS: displays a confirmation message depending on whether user requested to delete all their data or not
+     */
+    private void displayDeleteConfirmationMessage(int response) {
+        String not = "";
+
+        if (response == 0) {
+            not = "not ";
+        }
+
+        JOptionPane.showMessageDialog(null, "Your data will " + not + "be deleted.",
+                "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: empties the job application tracker and the table displaying the tracker data
+     */
+    private void deleteAllJobApplications() {
+        jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
+        tableModel.setRowCount(0);
     }
 
     /*
@@ -350,43 +426,62 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: creates a non-editable JTable for trackerTable for storing tracker data
+     * EFFECTS: initializes a table model and creates a non-editable JTable for trackerTable for storing tracker data,
+     *          populates the tracker table with the data from the model
      */
     private void createTable() {
-        String[][] data = getTableData();
-        String[] columnLabels = {"ID", "Submission Date", "Company", "Role", "Status"};
-        trackerTable = new JTable(data, columnLabels);
+        initializeTableModel();
+        trackerTable = new JTable(tableModel);
         trackerTable.setEnabled(false);
+        populateTable();
     }
 
     /*
-     * EFFECTS: returns the array containing the user's job application tracker data
+     * MODIFIES: this
+     * EFFECTS: creates a DefaultTableModel for tableModel and adds columns for "Submission Date", "Company", "Role",
+     *          and "Status"
      */
-    private String[][] getTableData() {
+    private void initializeTableModel() {
+        tableModel = new DefaultTableModel();
+        tableModel.addColumn("Submission Date");
+        tableModel.addColumn("Company");
+        tableModel.addColumn("Role");
+        tableModel.addColumn("Status");
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: populates the tracker table with data from jobApplicationTracker
+     */
+    private void populateTable() {
         int numJobApplications = jobApplicationTracker.getJobApplications().size();
-
-        String[][] data = new String[numJobApplications][];
-
         for (int i = 0; i < numJobApplications; i++) {
-            data[i] = getJobApplicationData(i);
+            addJobApplicationDataToTable(i);
         }
-
-        return data;
     }
 
     /*
-     * EFFECTS: returns an array of strings containing the id, submission date, company, role, and status of the job
-     *          application at the given index
+     * REQUIRES: index >= 0 && index < the number of job applications in the tracker
+     * MODIFIES: this
+     * EFFECTS: adds a job application at the given index to the tracker table
      */
-    private String[] getJobApplicationData(int index) {
+    private void addJobApplicationDataToTable(int index) {
         ArrayList<JobApplication> jobApplicationList = jobApplicationTracker.getJobApplications();
 
-        String id = Integer.toString(index);
         String submissionDate = jobApplicationList.get(index).getSubmissionDate().toString();
         String company = jobApplicationList.get(index).getCompanyName();
         String role = jobApplicationList.get(index).getRoleName();
         String status = String.valueOf(jobApplicationList.get(index).getStatus());
 
-        return new String[]{id, submissionDate, company, role, status};
+        addRowToTable(submissionDate, company, role, status);
+    }
+
+    /*
+     * REQUIRES: a job application with given submissionDate, company, role, and status are already in the tracker
+     * MODIFIES: this
+     * EFFECTS: adds a row to the table that represents a job application with the given parameters
+     */
+    private void addRowToTable(String submissionDate, String company, String role, String status) {
+        tableModel.addRow(new Object[]{submissionDate, company, role, status});
     }
 }
