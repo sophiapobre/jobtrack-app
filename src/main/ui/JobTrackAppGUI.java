@@ -42,7 +42,8 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: initializes the job application list, scanner, and JSON file reader
+     * EFFECTS: initializes the job application tracker with title "Sophia's Job Application Tracker", JSON
+     *          file reader, and JSON file writer
      */
     private void initializeFields() {
         jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
@@ -52,8 +53,8 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: sets up the JFrame window where JobTrackAppGUI will run, adds and displays logo for 3 seconds, adds
-     *          menu bar, tracker panel, and table
+     * EFFECTS: configures the JFrame window where JobTrackAppGUI will run, adds and displays the JobTrack logo for 3
+     *          seconds, displays the load data prompt, and adds menu bar, tracker panel, and tracker table
      */
     private void initializeGraphics() {
         setLayout(new BorderLayout());
@@ -61,24 +62,24 @@ public class JobTrackAppGUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        addLogo();
+        addLogoLabel();
         addMenuBar();
 
         displayLogoForThreeSeconds();
         displayLoadDataPrompt();
 
         addTrackerPanel();
-        addTable();
+        addTrackerTable();
         menuBar.setVisible(true);
         setVisible(true);
     }
 
     /*
      * MODIFIES: this
-     * EFFECTS: creates and adds a logo to the center of the window
+     * EFFECTS: creates and adds the JobTrack logo to the center of the window
      */
-    private void addLogo() {
-        createLogo();
+    private void addLogoLabel() {
+        createLogoLabel();
         add(logoLabel, BorderLayout.CENTER);
     }
 
@@ -86,7 +87,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: creates the JLabel for logoLabel and sets it to contain the JobTrack logo
      */
-    private void createLogo() {
+    private void createLogoLabel() {
         ImageIcon logo = new ImageIcon(LOGO_STORE);
         logoLabel = new JLabel();
         logoLabel.setIcon(logo);
@@ -98,21 +99,25 @@ public class JobTrackAppGUI extends JFrame {
      */
     private void displayLogoForThreeSeconds() {
         setVisible(true);
+        waitForThreeSeconds();
+        hideComponent(logoLabel);
+    }
 
+    /*
+     * EFFECTS: pauses program execution for 3 seconds, prints the stack trace in case an InterruptedException is thrown
+     */
+    private void waitForThreeSeconds() {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        hideComponent(logoLabel);
     }
 
     /*
-     * REQUIRES: response == 0 or response == 1
      * MODIFIES: this
-     * EFFECTS: asks the user if they want to load their data from file, displays message dialog containing message
-     *          depending on user selection and whether data was loaded successfully
+     * EFFECTS: asks the user if they want to load their data from file, displays message dialog containing an
+     *          outcome message depending on user selection and whether data was loaded successfully
      */
     private void displayLoadDataPrompt() {
         int response = displayYesOrNoPrompt("load");
@@ -126,9 +131,9 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * REQUIRES: action == "save" or action == "load" or action == "delete all"
-     * EFFECTS: asks the user if they want to either save, load, or delete all their data, depending on given action;
-     *          returns 0 if user selects no and 1 if user selects yes
+     * REQUIRES: action == "save" || action == "load" || action == "delete all"
+     * EFFECTS: asks the user if they want to perform the given action, returns 0 if user selects No and 1 if user
+     *          selects Yes
      */
     private int displayYesOrNoPrompt(String action) {
         String[] options = {"No", "Yes"};
@@ -176,7 +181,8 @@ public class JobTrackAppGUI extends JFrame {
     /*
      * MODIFIES: this
      * EFFECTS: creates a menu bar for menuBar with "JobTrack" and "Tracker" options, as well as menu items for
-     *          quitting, adding a job application, and deleting a job application
+     *          quitting the application, adding a job application, and deleting all job applications; menu bar is
+     *          initially set to be hidden
      */
     private void createMenuBar() {
         menuBar = new JMenuBar();
@@ -206,7 +212,7 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * EFFECTS: creates and returns a menu item to the JobTrack menu for quitting
+     * EFFECTS: creates and returns a menu item for quitting the application
      */
     private JMenuItem createQuitMenuItem() {
         JMenuItem quitOption = new JMenuItem("Quit JobTrack");
@@ -219,7 +225,7 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * EFFECTS: creates and returns a menu item to the JobTrack menu for adding a new job application
+     * EFFECTS: creates and returns a menu item for adding a new job application
      */
     private JMenuItem createAddMenuItem() {
         JMenuItem addOption = new JMenuItem("Add Job Application");
@@ -228,7 +234,6 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * REQUIRES: user either enters a non-empty string or presses cancel in all prompts
      * EFFECTS: displays 3 prompts for the user to enter the submission date, company name, and role name and
      *          adds the job application with the given inputs to the tracker if user does not press cancel in any of
      *          the 3 prompts, otherwise returns without updating the tracker
@@ -253,37 +258,18 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * REQUIRES: submissionDate, companyName, and roleName are not empty and not null; job application with given
-     *           inputs are not already in the tracker
+     * REQUIRES: given parameters are not empty and not null, submissionDate is in format YYYY-MM-DD, and a job
+     *           application with given parameters are not already in the tracker
      * MODIFIES: this
-     * EFFECTS: creates a new job application and adds it to the tracker, adds a row with the given information to the
-     *          tracker table
+     * EFFECTS: creates a new job application and adds it to the tracker, adds a row containing the given parameters
+     *          and a default status of "SUBMITTED" to the tracker table
      */
     private void addJobApplicationToTracker(String submissionDate, String companyName, String roleName) {
         jobApplicationTracker.add(new JobApplication(submissionDate, companyName, roleName));
-
-        int id = getIndexOfLastJobApplication();
-        JobApplicationStatus status = getStatusOfJobApplication(id);
-        addRowToTable(submissionDate, companyName, roleName, String.valueOf(status));
+        addRowToTable(submissionDate, companyName, roleName, "SUBMITTED");
     }
 
     /*
-     * EFFECTS: returns the index of the most recently added job application
-     */
-    private int getIndexOfLastJobApplication() {
-        return jobApplicationTracker.getJobApplications().size() - 1;
-    }
-
-    /*
-     * REQUIRES: id >= 0 && id < the number of job applications in the tracker
-     * EFFECTS: returns the status of the job application at the given index
-     */
-    private JobApplicationStatus getStatusOfJobApplication(int index) {
-        return jobApplicationTracker.getJobApplications().get(index).getStatus();
-    }
-
-    /*
-     * REQUIRES: user either enters a non-empty string in format YYYY-MM-DD or presses cancel
      * EFFECTS: prompts user to enter a submission date; returns a null string if user pressed cancel, otherwise
      *          returns the submission date entered by user
      */
@@ -294,7 +280,6 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * REQUIRES: user either enters a non-empty string or presses cancel
      * EFFECTS: prompts user to enter a company name; returns a null string if user pressed cancel, otherwise
      *          returns the company name entered by user
      */
@@ -304,7 +289,6 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * REQUIRES: user either enters a non-empty string or presses cancel
      * EFFECTS: prompts the user to enter a role name; returns a null string if user pressed cancel, otherwise
      *          returns the role name entered by user
      */
@@ -314,14 +298,11 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * MODIFIES: this
-     * EFFECTS: creates and returns a menu item to the JobTrack menu for deleting all job applications
+     * EFFECTS: creates and returns a menu item for deleting all job applications
      */
     private JMenuItem createDeleteAllMenuItem() {
         JMenuItem deleteOption = new JMenuItem("Delete All Job Applications");
-        deleteOption.addActionListener(e -> {
-            displayDeleteJobApplicationPrompt();
-        });
+        deleteOption.addActionListener(e -> displayDeleteJobApplicationPrompt());
         return deleteOption;
     }
 
@@ -342,7 +323,7 @@ public class JobTrackAppGUI extends JFrame {
     }
 
     /*
-     * REQUIRES: response == 0 or response == 1
+     * REQUIRES: response == 0 || response == 1
      * EFFECTS: displays a confirmation message depending on whether user requested to delete all their data or not
      */
     private void displayDeleteConfirmationMessage(int response) {
@@ -358,7 +339,8 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: empties the job application tracker and the table displaying the tracker data
+     * EFFECTS: re-instantiates jobApplicationTracker with title "Sophia's Job ApplicationTracker" and empties the
+     *          table displaying the tracker data
      */
     private void deleteAllJobApplications() {
         jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
@@ -367,8 +349,8 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: asks the user if they want to save their data to file, displays message dialog containing message
-     *          depending on user selection and whether data was saved successfully
+     * EFFECTS: asks the user if they want to save their data to file, displays message dialog containing outcome
+     *          message depending on user selection and whether data was saved successfully
      */
     private void displaySaveDataPrompt() {
         int response = displayYesOrNoPrompt("save");
@@ -419,7 +401,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: creates a table for storing tracker data and adds it to the center of trackerPanel
      */
-    private void addTable() {
+    private void addTrackerTable() {
         createTable();
         trackerPanel.add(new JScrollPane(trackerTable), BorderLayout.CENTER);
     }
@@ -463,7 +445,7 @@ public class JobTrackAppGUI extends JFrame {
     /*
      * REQUIRES: index >= 0 && index < the number of job applications in the tracker
      * MODIFIES: this
-     * EFFECTS: adds a job application at the given index to the tracker table
+     * EFFECTS: adds the data of the job application at the given index to the tracker table
      */
     private void addJobApplicationDataToTable(int index) {
         ArrayList<JobApplication> jobApplicationList = jobApplicationTracker.getJobApplications();
