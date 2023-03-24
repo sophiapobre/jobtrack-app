@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 // Represents the JobTrack Application GUI
 public class JobTrackAppGUI extends JFrame {
-    public static final int WIDTH = 1000; // the width of this window
-    public static final int HEIGHT = 800; // the height of this window
+    private static final int WIDTH = 1000; // the width of this window
+    private static final int HEIGHT = 800; // the height of this window
     private static final String JSON_STORE = "./data/jobApplicationTracker.json"; // the file path to user data
     private static final String LOGO_STORE = "./data/jobTrackLogo.png"; // the file path to the JobTrack logo
 
@@ -44,7 +44,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: initializes the job application list, scanner, and JSON file reader
      */
-    public void initializeFields() {
+    private void initializeFields() {
         jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
         jsonReader = new JsonReader(JSON_STORE);
         jsonWriter = new JsonWriter(JSON_STORE);
@@ -55,7 +55,7 @@ public class JobTrackAppGUI extends JFrame {
      * EFFECTS: sets up the JFrame window where JobTrackAppGUI will run, adds and displays logo for 3 seconds, adds
      *          menu bar, tracker panel, and table
      */
-    public void initializeGraphics() {
+    private void initializeGraphics() {
         setLayout(new BorderLayout());
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
@@ -77,7 +77,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: creates and adds a logo to the center of the window
      */
-    public void addLogo() {
+    private void addLogo() {
         createLogo();
         add(logoLabel, BorderLayout.CENTER);
     }
@@ -86,7 +86,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: creates the JLabel for logoLabel and sets it to contain the JobTrack logo
      */
-    public void createLogo() {
+    private void createLogo() {
         ImageIcon logo = new ImageIcon(LOGO_STORE);
         logoLabel = new JLabel();
         logoLabel.setIcon(logo);
@@ -96,7 +96,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: displays the JobTrack logo for 3 seconds
      */
-    public void displayLogoForThreeSeconds() {
+    private void displayLogoForThreeSeconds() {
         setVisible(true);
 
         try {
@@ -114,7 +114,7 @@ public class JobTrackAppGUI extends JFrame {
      * EFFECTS: asks the user if they want to load their data from file, displays message dialog containing message
      *          depending on user selection and whether data was loaded successfully
      */
-    public void displayLoadDataPrompt() {
+    private void displayLoadDataPrompt() {
         int response = displayYesOrNoPrompt("load");
 
         if (response == 0) {
@@ -168,7 +168,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: creates and adds a menu bar to the north of the window
      */
-    public void addMenuBar() {
+    private void addMenuBar() {
         createMenuBar();
         add(menuBar, BorderLayout.NORTH);
     }
@@ -178,7 +178,7 @@ public class JobTrackAppGUI extends JFrame {
      * EFFECTS: creates a menu bar for menuBar with "JobTrack" and "Tracker" options, as well as menu items for
      *          quitting, adding a job application, and deleting a job application
      */
-    public void createMenuBar() {
+    private void createMenuBar() {
         menuBar = new JMenuBar();
         hideComponent(menuBar);
 
@@ -201,7 +201,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: component
      * EFFECTS: hides the given component
      */
-    public void hideComponent(JComponent component) {
+    private void hideComponent(JComponent component) {
         component.setVisible(false);
     }
 
@@ -370,7 +370,7 @@ public class JobTrackAppGUI extends JFrame {
      * EFFECTS: asks the user if they want to save their data to file, displays message dialog containing message
      *          depending on user selection and whether data was saved successfully
      */
-    public void displaySaveDataPrompt() {
+    private void displaySaveDataPrompt() {
         int response = displayYesOrNoPrompt("save");
 
         if (response == 0) {
@@ -401,7 +401,7 @@ public class JobTrackAppGUI extends JFrame {
      * MODIFIES: this
      * EFFECTS: creates a panel for storing the tracker and adds it to the center of the window
      */
-    public void addTrackerPanel() {
+    private void addTrackerPanel() {
         createTrackerPanel();
         add(trackerPanel, BorderLayout.CENTER);
     }
