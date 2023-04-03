@@ -33,3 +33,7 @@ Sun Apr 02 20:27:54 PDT 2023
 Removed all job applications from the tracker.
 Sun Apr 02 20:28:04 PDT 2023
 Added job application to the tracker: 2023-04-01 | Twitter | CEO | SUBMITTED
+
+# Phase 4: Task 3
+
+In order to improve the design of my project, I would split up some of the fields of the JobTrackAppGUI class into different classes. Currently, this class does not follow the single responsibility principle because every single method needed to construct the GUI is stored in this class. To increase the cohesion of this class, I would create new classes for the menu bar, the tracker table, and the table model. These fields and their related methods have unique functionalities, so keeping them all in JobTrackAppGUI decreases the cohesion of the class. For example, the creation of the menu bar entails the creation of several menu items, which each have their own functionality (e.g., adding a new job application, deleting all job applications, and quitting the program). Moreover, the creation of the tracker table and table model entail many method calls to access and modify the jobApplicationTracker field of the JobTrackAppGUI class. As a result, including all of these fields in the same class make the class more cluttered and difficult to understand. Refactoring some of these fields into different classes would increase the cohesion of the class and ensure that each class has a single responsibility that is clear to others who may want to understand my code.
