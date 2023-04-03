@@ -5,6 +5,7 @@ import java.util.Date;
 
 
 // Represents a job application tracker event
+// Based on AlarmSystem project provided by the CPSC 210 teaching team
 public class Event {
     private static final int HASH_CONSTANT = 13;
     private Date dateLogged;
