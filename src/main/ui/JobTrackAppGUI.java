@@ -1,7 +1,8 @@
 package ui;
 
+import model.Event;
+import model.EventLog;
 import model.JobApplication;
-import model.JobApplicationStatus;
 import model.JobApplicationTracker;
 import persistence.JsonReader;
 import persistence.JsonWriter;
@@ -30,6 +31,8 @@ public class JobTrackAppGUI extends JFrame {
     private JTable trackerTable; // the table containing the job application tracker data
     private DefaultTableModel tableModel; // the model for the table data
 
+    private EventLog eventLog; // the event log for the job application tracker
+
     /*
      * MODIFIES: this
      * EFFECTS: creates a JobTrackAppGUI with title "JobTrack", initializes fields and graphics
@@ -49,6 +52,7 @@ public class JobTrackAppGUI extends JFrame {
         jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
         jsonReader = new JsonReader(JSON_STORE);
         jsonWriter = new JsonWriter(JSON_STORE);
+        eventLog = EventLog.getInstance();
     }
 
     /*
@@ -218,10 +222,20 @@ public class JobTrackAppGUI extends JFrame {
         JMenuItem quitOption = new JMenuItem("Quit JobTrack");
         quitOption.addActionListener(e -> {
             displaySaveDataPrompt();
+            printEventLog();
             System.exit(0);
         });
 
         return quitOption;
+    }
+
+    /*
+     * EFFECTS: prints all events in the event log to the console
+     */
+    private void printEventLog() {
+        for (Event event : eventLog) {
+            System.out.println(event);
+        }
     }
 
     /*
@@ -265,7 +279,7 @@ public class JobTrackAppGUI extends JFrame {
      *          and a default status of "SUBMITTED" to the tracker table
      */
     private void addJobApplicationToTracker(String submissionDate, String companyName, String roleName) {
-        jobApplicationTracker.add(new JobApplication(submissionDate, companyName, roleName));
+        jobApplicationTracker.add(submissionDate, companyName, roleName);
         addRowToTable(submissionDate, companyName, roleName, "SUBMITTED");
     }
 
@@ -339,11 +353,10 @@ public class JobTrackAppGUI extends JFrame {
 
     /*
      * MODIFIES: this
-     * EFFECTS: re-instantiates jobApplicationTracker with title "Sophia's Job ApplicationTracker" and empties the
-     *          table displaying the tracker data
+     * EFFECTS: empties the job application tracker and the table displaying the tracker data
      */
     private void deleteAllJobApplications() {
-        jobApplicationTracker = new JobApplicationTracker("Sophia's Job Application Tracker");
+        jobApplicationTracker.removeAllJobApplications();
         tableModel.setRowCount(0);
     }
 

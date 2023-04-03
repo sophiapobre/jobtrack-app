@@ -24,3 +24,12 @@ I wanted to create *JobTrack* to monitor the countless job applications I've sub
 - You can locate my visual component (i.e., the JobTrack logo) by simply launching the application. The image will be displayed for 3 seconds and then automatically disappear when you are asked whether you want to load your data.
 - You can save the state of my application by clicking "JobTrack" and then "Quit JobTrack" on the menu bar, and then pressing the "Yes" button when a prompt asks if you would like to save your data.
 - You can reload the state of my application by launching the application and pressing the "Yes" button when a prompt asks if you would like to load your data.
+
+# Phase 4: Task 2
+
+Sun Apr 02 20:27:49 PDT 2023
+Added job application to the tracker: 2023-04-02 | Coinbase | Web Developer | SUBMITTED
+Sun Apr 02 20:27:54 PDT 2023
+Removed all job applications from the tracker.
+Sun Apr 02 20:28:04 PDT 2023
+Added job application to the tracker: 2023-04-01 | Twitter | CEO | SUBMITTED
