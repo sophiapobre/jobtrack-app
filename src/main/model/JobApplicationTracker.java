@@ -34,6 +34,19 @@ public class JobApplicationTracker implements Writable {
 
     /*
      * MODIFIES: this
+     * EFFECTS: creates adds a job application with given date, company, and role, and a status set to SUBMITTED to
+     *          the tracker
+     */
+    public void add(String date, String company, String role) {
+        JobApplication j = new JobApplication(date, company, role);
+        add(j);
+        EventLog.getInstance().logEvent(new Event("Added job application to the tracker: "
+                + j.getSubmissionDate() + " | " + j.getCompanyName() + " | " + j.getRoleName() + " | "
+                + j.getStatus()));
+    }
+
+    /*
+     * MODIFIES: this
      * EFFECTS: returns true if j is successfully removed from the job application tracker, false otherwise
      */
     public boolean remove(JobApplication j) {
@@ -43,6 +56,15 @@ public class JobApplicationTracker implements Writable {
         } else {
             return false;
         }
+    }
+
+    /*
+     * MODIFIES: this
+     * EFFECTS: removes all job applications from the job application tracker
+     */
+    public void removeAllJobApplications() {
+        jobApplicationList = new ArrayList<>();
+        EventLog.getInstance().logEvent(new Event("Removed all job applications from the tracker."));
     }
 
     /*
@@ -63,7 +85,7 @@ public class JobApplicationTracker implements Writable {
      * EFFECTS: returns a list of job applications with status set to given status in the tracker
      */
     private ArrayList<JobApplication> getJobApplications(JobApplicationStatus status) {
-        ArrayList<JobApplication> filteredList = new ArrayList<JobApplication>();
+        ArrayList<JobApplication> filteredList = new ArrayList<>();
         for (JobApplication j : jobApplicationList) {
             if (j.getStatus().equals(status)) {
                 filteredList.add(j);

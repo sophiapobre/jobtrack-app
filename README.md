@@ -11,6 +11,7 @@ I wanted to create *JobTrack* to monitor the countless job applications I've sub
 - As a user, I want to be able to add a job application to my tracker
 - As a user, I want to be able to view a list of job applications in my tracker
 - As a user, I want to be able to delete a job application from my tracker
+- As a user, I want to be able to all remove job applications from my tracker
 - As a user, I want to be able to update a job application's status (e.g., submitted, interviewed, accepted, and rejected)
 - As a user, I want to be able to view the number and percentage of job applications under each status category
 - As a user, I want to be given the option to save (or not save) my tracker to file when I decide to quit the application
