@@ -26,13 +26,22 @@ I wanted to create *JobTrack* to monitor the countless job applications I've sub
 - You can reload the state of my application by launching the application and pressing the "Yes" button when a prompt asks if you would like to load your data.
 
 # Phase 4: Task 2
-
-Sun Apr 02 20:27:49 PDT 2023
-Added job application to the tracker: 2023-04-02 | Coinbase | Web Developer | SUBMITTED
-Sun Apr 02 20:27:54 PDT 2023
+```
+Wed Apr 05 11:05:59 PDT 2023
+Added job application to the tracker: 2023-05-05 | Workday | Product Manager | INTERVIEWED
+Wed Apr 05 11:05:59 PDT 2023
+Added job application to the tracker: 2019-06-20 | Microsoft | Product Marketing Manager | ACCEPTED
+Wed Apr 05 11:05:59 PDT 2023
+Added job application to the tracker: 2023-02-28 | UBC | Teaching Assistant | SUBMITTED
+Wed Apr 05 11:05:59 PDT 2023
+Added job application to the tracker: 2023-02-28 | Lululemon | Marketing Manager | SUBMITTED
+Wed Apr 05 11:05:59 PDT 2023
+Added job application to the tracker: 2023-03-21 | Meta | Software Engineer | SUBMITTED
+Wed Apr 05 11:06:06 PDT 2023
 Removed all job applications from the tracker.
-Sun Apr 02 20:28:04 PDT 2023
-Added job application to the tracker: 2023-04-01 | Twitter | CEO | SUBMITTED
+Wed Apr 05 11:06:16 PDT 2023
+Added job application to the tracker: 2023-04-05 | Workday | Presales | SUBMITTED
+```
 
 # Phase 4: Task 3
 

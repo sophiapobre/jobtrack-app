@@ -28,21 +28,11 @@ public class JobApplicationTracker implements Writable {
             return false;
         } else {
             jobApplicationList.add(j);
+            EventLog.getInstance().logEvent(new Event("Added job application to the tracker: "
+                    + j.getSubmissionDate() + " | " + j.getCompanyName() + " | " + j.getRoleName() + " | "
+                    + j.getStatus()));
             return true;
         }
-    }
-
-    /*
-     * MODIFIES: this
-     * EFFECTS: creates adds a job application with given date, company, and role, and a status set to SUBMITTED to
-     *          the tracker
-     */
-    public void add(String date, String company, String role) {
-        JobApplication j = new JobApplication(date, company, role);
-        add(j);
-        EventLog.getInstance().logEvent(new Event("Added job application to the tracker: "
-                + j.getSubmissionDate() + " | " + j.getCompanyName() + " | " + j.getRoleName() + " | "
-                + j.getStatus()));
     }
 
     /*

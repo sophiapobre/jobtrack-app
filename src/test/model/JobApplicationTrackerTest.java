@@ -57,14 +57,6 @@ public class JobApplicationTrackerTest {
     }
 
     @Test
-    public void testAddUsingDataAsParameters() {
-        tracker.add("2020-01-01", "Coinbase", "Developer");
-        JobApplication j = new JobApplication("2020-01-01", "Coinbase", "Developer");
-        assertTrue(tracker.getJobApplications().contains(j));
-        assertEquals(1, tracker.getJobApplications().size());
-    }
-
-    @Test
     public void testRemoveJobApplicationInTracker() {
         addAllJobApplicationsToTracker();
         assertTrue(tracker.remove(j2));

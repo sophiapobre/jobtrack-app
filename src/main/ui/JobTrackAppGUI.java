@@ -279,7 +279,7 @@ public class JobTrackAppGUI extends JFrame {
      *          and a default status of "SUBMITTED" to the tracker table
      */
     private void addJobApplicationToTracker(String submissionDate, String companyName, String roleName) {
-        jobApplicationTracker.add(submissionDate, companyName, roleName);
+        jobApplicationTracker.add(new JobApplication(submissionDate, companyName, roleName));
         addRowToTable(submissionDate, companyName, roleName, "SUBMITTED");
     }
 
