@@ -7,23 +7,19 @@ import java.util.Iterator;
 // Represents a log of job application tracker events.
 // Based on AlarmSystem project provided by the CPSC 210 teaching team
 public class EventLog implements Iterable<Event> {
-    /** the only EventLog in the system (Singleton Design Pattern) */
-    private static EventLog theLog;
-    private Collection<Event> events;
+    private static EventLog theLog; // the only event log in the system
+    private Collection<Event> events; // the collection of events in the event log
 
-    /**
-     * Prevent external construction.
-     * (Singleton Design Pattern).
+    /*
+     * EFFECTS: creates an event log with an empty list of events
      */
     private EventLog() {
         events = new ArrayList<Event>();
     }
 
-    /**
-     * Gets instance of EventLog - creates it
-     * if it doesn't already exist.
-     * (Singleton Design Pattern)
-     * @return  instance of EventLog
+    /*
+     * MODIFIES: this
+     * EFFECTS: creates an event log if it doesn't already exist, returns the event log
      */
     public static EventLog getInstance() {
         if (theLog == null) {
@@ -33,22 +29,26 @@ public class EventLog implements Iterable<Event> {
         return theLog;
     }
 
-    /**
-     * Adds an event to the event log.
-     * @param e the event to be added
+    /*
+     * MODIFIES: this
+     * EFFECTS: adds the given e to the event log
      */
     public void logEvent(Event e) {
         events.add(e);
     }
 
-    /**
-     * Clears the event log and logs the event.
+    /*
+     * MODIFIES: this
+     * EFFECTS: clears the event log and logs the clearing as an event
      */
     public void clear() {
         events.clear();
         logEvent(new Event("Event log cleared."));
     }
 
+    /*
+     * EFFECTS: returns an iterator over the events in the event log
+     */
     @Override
     public Iterator<Event> iterator() {
         return events.iterator();
