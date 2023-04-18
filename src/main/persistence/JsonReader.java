@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 // Represents a reader that reads the tracker from JSON data stored in file
-// Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
 public class JsonReader {
     private String source; // the source file
 

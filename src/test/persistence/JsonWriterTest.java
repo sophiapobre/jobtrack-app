@@ -12,7 +12,6 @@ import static model.JobApplicationStatus.*;
 import static model.JobApplicationStatus.ACCEPTED;
 import static org.junit.jupiter.api.Assertions.fail;
 
-// Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
 public class JsonWriterTest extends JsonTest {
     private JobApplicationTracker tracker;
 

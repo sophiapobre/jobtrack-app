@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 // Represents a log of job application tracker events.
-// Based on AlarmSystem project provided by the CPSC 210 teaching team
 public class EventLog implements Iterable<Event> {
     private static EventLog theLog; // the only event log in the system
     private Collection<Event> events; // the collection of events in the event log

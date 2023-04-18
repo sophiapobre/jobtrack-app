@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import static model.JobApplicationStatus.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
-// Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
 public class JsonReaderTest extends JsonTest {
     @Test
     public void testReaderMissingFile() {

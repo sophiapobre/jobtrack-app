@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 // Represents a writer that writes the JSON representation of a job application tracker to file
-// Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
 public class JsonWriter {
     private static final int TAB = 4; // the number of spaces in a tab
     private PrintWriter writer; // the writer object

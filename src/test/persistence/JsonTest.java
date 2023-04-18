@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// Based on JsonSerializationDemo-master project provided by the CPSC 210 teaching team
 public class JsonTest {
     protected void checkJobApplicationTrackerNameAndListSize(String name, int size, JobApplicationTracker tracker) {
         assertEquals(name, tracker.getName());
